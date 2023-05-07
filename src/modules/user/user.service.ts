@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/primsa.service';
 import { EmailService } from 'src/utils/email/email.service';
 import { hashPassword } from 'src/utils/hash.util';
+import { FindUserDto } from './dto/find-user.dto';
 
 @Injectable()
 export class UserService {
@@ -26,8 +27,9 @@ export class UserService {
     return this.prisma.user.create({ data: { ...createUserDto, password } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<FindUserDto> {
+    const find = await this.prisma.user.findUnique({ where: { id } });
+    return new FindUserDto({ ...find });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
