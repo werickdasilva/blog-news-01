@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/primsa.service';
@@ -24,7 +29,11 @@ export class UserService {
 
     const password = await hashPassword(createUserDto.password);
 
-    return this.prisma.user.create({ data: { ...createUserDto, password } });
+    return this.prisma.user
+      .create({ data: { ...createUserDto, password } })
+      .then(() => {
+        throw new HttpException('User created successfully.', HttpStatus.OK);
+      });
   }
 
   async findOne(id: number): Promise<FindUserDto> {
