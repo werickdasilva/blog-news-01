@@ -10,6 +10,7 @@ import { PrismaService } from 'src/database/primsa.service';
 import { EmailService } from 'src/utils/email/email.service';
 import { hashPassword } from 'src/utils/hash.util';
 import { FindUserDto } from './dto/find-user.dto';
+import { ReturnUserDto } from './dto/return-user.dto';
 
 @Injectable()
 export class UserService {
@@ -47,5 +48,11 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async findEmail(email: string): Promise<ReturnUserDto | undefined> {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
   }
 }
